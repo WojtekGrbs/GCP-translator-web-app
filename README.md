@@ -8,6 +8,7 @@ A modular [web app](https://micro-eye-455517-a2.web.app/dashboard.html) for mult
 
 <br>
 <img width="1375" alt="Screenshot 2025-06-22 at 14 03 17" src="https://github.com/user-attachments/assets/ca79f164-b12b-45d7-9c2a-3ecbb497f64d" />
+
 ## Features
 
 
