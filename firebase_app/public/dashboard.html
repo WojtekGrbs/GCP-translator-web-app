@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Translator Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="top-bar">
+    <h1>Translator</h1>
+    <button id="logout">Logout</button>
+  </div>
+
+  <div class="language-options">
+    <div class="language-label">🌐 Select target language:</div>
+    <div class="language-buttons">
+      <button class="lang-btn active" data-lang="fr">French</button>
+      <button class="lang-btn" data-lang="ro">Romanian</button>
+      <button class="lang-btn" data-lang="de">German</button>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="translateBtn">
+      Translate
+    </button>
+  </div>
+
+  <div class="translation-box">
+    <textarea id="inputText" placeholder="Enter text..." class="input"></textarea>
+    <textarea id="result" readonly placeholder="Translation will appear here..." class="output"></textarea>
+  </div>
+
+<script type="module">
+  import { onAuth, logout } from "./js/auth.js";
+  import { callTranslateAPI } from "./js/api.js";
+
+  // Definicja showPopup musi być tu
+  function showPopup(message, type = "success") {
+  const overlay = document.getElementById("popupOverlay");
+  const popup = document.getElementById("popup");
+  const spinner = document.getElementById("spinner");
+
+  popup.textContent = message;
+  popup.className = `popup ${type}`;
+  overlay.classList.add("show");
+
+  setTimeout(() => {
+    overlay.classList.remove("show");
+  }, 3000);
+
+  overlay.onclick = () => {
+    overlay.classList.remove("show");
+  };
+  }
+
+
+  onAuth(user => {
+    if (!user) {
+      window.location.href = "/login.html";
+    }
+  });
+
+  document.getElementById("logout").onclick = () => logout().then(() => {
+    window.location.href = "/login.html";
+  });
+
+  // Language selection logic
+  const langButtons = document.querySelectorAll('.lang-btn');
+  let selectedLanguage = 'fr'; // default
+
+  langButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      langButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      selectedLanguage = button.dataset.lang;
+    });
+  });
+
+  document.getElementById("translateBtn").onclick = async () => {
+  const text = document.getElementById("inputText").value;
+  const resultEl = document.getElementById("result");
+  spinner.classList.remove("hidden");  // Pokaż spinner
+
+  try {
+    const data = await callTranslateAPI(text, selectedLanguage);
+
+    if (!data.success) {
+      showPopup(data.message || "An error occurred", "error");
+      resultEl.value = "";
+    } else {
+      resultEl.value = data.translated_text || "No translation returned.";
+      
+    }
+  } catch (err) {
+    showPopup("Error: " + err.message, "error");
+    resultEl.value = "";
+  } finally {
+    spinner.classList.add("hidden");  // Ukryj spinner po zakończeniu
+  }
+};
+
+</script>
+
+  <div id="popupOverlay" class="popup-overlay">
+  <div id="popup" class="popup"></div>
+</div>
+
+</div>
+
+<div id="spinner" class="spinner hidden"></div>
+
+
+</body>
+</html>

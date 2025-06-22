@@ -1,0 +1,6 @@
+functions-framework
+google-cloud-firestore
+cloud-sql-python-connector[pg8000]
+sqlalchemy
+Flask==2.2.5
+tenacity

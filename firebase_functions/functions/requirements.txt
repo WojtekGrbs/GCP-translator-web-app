@@ -1,0 +1,9 @@
+firebase_functions~=0.1.0
+Flask==2.2.5
+requests==2.31.0
+psycopg2-binary==2.9.9
+cors
+cloud-sql-python-connector[pg8000]
+sqlalchemy
+redis
+google-auth>=2.0.0
